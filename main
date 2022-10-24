@@ -136,7 +136,7 @@ class Tree(object):
         else:
             l = __get_levels__(current.lChild, level+1, num)
             r = __get_levels__(current.rChild, level+1, num)
-            return l + " " + r + " "
+            return str(current.data) + " " + l + " " + r + " "
 
 
     # Returns the list of the node that you see from left side
