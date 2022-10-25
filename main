@@ -2,7 +2,7 @@
 
 #  Description:
 
-#  Student Name: Matthew Meldrum 
+#  Student Name: Matthew Meldrum
 
 #  Student UT EID: msm4727
 
@@ -22,12 +22,13 @@
 import sys
 
 
-class Node (object):
+class Node(object):
     # constructor
     def __init__(self, data):
         self.data = data
         self.lChild = None
         self.rChild = None
+
 
     def print_node(self, level=0):
 
@@ -59,23 +60,50 @@ class Node (object):
         else:
             return 0 + self.lChild.sum() + self.rChild.sum()
 
-    def leftSide(self, lst=[]):
-        print(self.data)
-        print(lst)
+
+
+
+    def leftSidehelp(self, lst=[], fooarg = False):
+        if fooarg == True:
+            lst.clear()
+            fooarg == False
+        if self.data not in lst:
+            lst.append(self.data)
         if self.lChild == None and self.rChild == None:
-            return lst.append(self.data)
+            pass
         elif self.lChild == None:
-            lst.append(self.data)
-            return self.rChild.leftSide()
+            self.rChild.leftSidehelp()
         elif self.rChild == None:
-            lst.append(self.data)
-            return self.lChild.leftSide()
+            self.lChild.leftSidehelp()
         else:
-            lst.append(self.data)
-            return self.lChild.leftSide(), self.rChild.leftSide()
+            self.lChild.leftSidehelp(), self.rChild.leftSidehelp()
         return lst
-        
-    def rangehelp(self, lst = [] ):
+
+
+    def getlevelhelp(self, level, myarr = [], fooarg = False):
+        current = self
+        if fooarg == True:
+            myarr.clear()
+            fooarg == False
+        if level == 0:
+            myarr.append(self)
+        else:
+            level -= 1
+            if current.lChild != None:
+                self.lChild.getlevelhelp(level)
+            if current.rChild != None:
+                self.rChild.getlevelhelp(level)
+        return myarr
+
+
+
+
+
+
+    def rangehelp(self, lst = [], fooarg = False):
+        if fooarg == True:
+            lst.clear()
+            fooarg == False
         if self.data not in lst:
             lst.append(self.data)
         if self.lChild == None and self.rChild == None:
@@ -87,6 +115,10 @@ class Node (object):
         else:
             self.lChild.rangehelp(), self.rChild.rangehelp()
         return lst
+
+
+
+
 
 
 class Tree(object):
@@ -126,47 +158,35 @@ class Tree(object):
     # Returns the range of values stored in a binary search tree of integers.
     # The range of values equals the maximum value in the binary search tree minus the minimum value.
     # If there is one value in the tree the range is 0. If the tree is empty the range is undefined.
-    
+
     def range(self):
         lst = self.root.rangehelp()
+        self.root.rangehelp(fooarg = True)
         lst.sort()
-        length = len(lst) -1
-        print(lst)
+        length = len(lst) - 1
         return int(lst[length]) - int(lst[0])
-
 
     # Returns a list of nodes at a given level from left to right
     def get_level(self, level):
-        string = __get_levels__(self.root, level, 1)
-        lst = string.split(" ")
-        return lst
-   
-    def __get_levels__(self, current, level, num):
-        if(current.data == None):
-            return ""
-        if(num == level):
-            return str(current.data)
-        else:
-            l = __get_levels__(current.lChild, level+1, num)
-            r = __get_levels__(current.rChild, level+1, num)
-            return str(current.data) + " " + l + " " + r + " "
+        if self.root == None:
+            return []
+        height = self.get_height()
+        if int(height) <= level:
+            return [1]
+        myarr = self.root.getlevelhelp(level)
+        self.root.getlevelhelp(level, fooarg = True)
+        return myarr
+
 
 
     # Returns the list of the node that you see from left side
     # The order of the output should be from top to down
     def left_side_view(self):
-        myList = []
-        myList.append(self.root.data)
-        leftChild = self.root.lChild
-        leftList = [leftChild.leftSide()
-        print('this is leftList')
-        print(leftList)
-        for i in leftList:
-            myList.append(i)
-        return myList
-
-
-
+        current = self.root.lChild
+        myarr = current.leftSidehelp()
+        current.leftSidehelp(fooarg = True)
+        myarr.reverse()
+        return myarr
 
 
 
@@ -174,11 +194,6 @@ class Tree(object):
     # a leaf node does not have any children.
     def sum_leaf_nodes(self):
         return self.root.sum()
-
-  
-
-
-
 
 
 def make_tree(data):
@@ -196,43 +211,50 @@ def main():
     line = sys.stdin.readline()
     line = line.strip()
     line = line.split()
-    tree1_input = list(map(int, line)) 	# converts elements into ints
+    tree1_input = list(map(int, line))  # converts elements into ints
     t1 = make_tree(tree1_input)
     t1.print(t1.get_height())
 
-    print("Tree range is: ",   t1.range())
+    print("Tree range is: ", t1.range())
     print("Tree left side view is: ", t1.left_side_view())
     print("Sum of leaf nodes is: ", t1.sum_leaf_nodes())
     print("##########################")
 
-# Another Tree for test.
+    # Another Tree for test.
     line = sys.stdin.readline()
     line = line.strip()
     line = line.split()
-    tree2_input = list(map(int, line)) 	# converts elements into ints
+    tree2_input = list(map(int, line))  # converts elements into ints
     t2 = make_tree(tree2_input)
     t2.print(t2.get_height())
 
-    print("Tree range is: ",   t2.range())
+    print("Tree range is: ", t2.range())
     print("Tree left side view is: ", t2.left_side_view())
     print("Sum of leaf nodes is: ", t2.sum_leaf_nodes())
     print("##########################")
-# Another Tree
+    # Another Tree
     line = sys.stdin.readline()
     line = line.strip()
     line = line.split()
-    tree3_input = list(map(int, line)) 	# converts elements into ints
+    tree3_input = list(map(int, line))  # converts elements into ints
     t3 = make_tree(tree3_input)
     t3.print(t3.get_height())
 
-    print("Tree range is: ",   t3.range())
+    print("Tree range is: ", t3.range())
     print("Tree left side view is: ", t3.left_side_view())
     print("Sum of leaf nodes is: ", t3.sum_leaf_nodes())
     print("##########################")
 
+    t5 = make_tree( [3, 1, 2, 5, 4])
+    t5.print(t5.get_height())
+    print(' ')
+    t4 = make_tree([1, 2, 3, 4, 5])
+    t4.print(t4.get_height())
+    arr = t4.get_level(0)
+    for i in arr:
+        print(i.data)
+
+
 
 if __name__ == "__main__":
     main()
-
-
-
