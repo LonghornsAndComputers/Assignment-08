@@ -53,11 +53,11 @@ class Node (object):
         if self.lChild == None and self.rChild == None:
             return self.data
         elif self.lChild == None:
-            return self.data + self.rChild.sum()
+            return 0 + self.rChild.sum()
         elif self.rChild == None:
-            return self.data + self.lChild.sum()
+            return 0 + self.lChild.sum()
         else:
-            return self.data + self.lChild.sum() + self.rChild.sum()
+            return 0 + self.lChild.sum() + self.rChild.sum()
 
     def leftSide(self, lst=[]):
         print(self.data)
@@ -74,11 +74,19 @@ class Node (object):
             lst.append(self.data)
             return self.lChild.leftSide(), self.rChild.leftSide()
         return lst
-
-
-
-
-
+        
+    def rangehelp(self, lst = [] ):
+        if self.data not in lst:
+            lst.append(self.data)
+        if self.lChild == None and self.rChild == None:
+            pass
+        elif self.lChild == None:
+            self.rChild.rangehelp()
+        elif self.rChild == None:
+            self.lChild.rangehelp()
+        else:
+            self.lChild.rangehelp(), self.rChild.rangehelp()
+        return lst
 
 
 class Tree(object):
@@ -118,8 +126,13 @@ class Tree(object):
     # Returns the range of values stored in a binary search tree of integers.
     # The range of values equals the maximum value in the binary search tree minus the minimum value.
     # If there is one value in the tree the range is 0. If the tree is empty the range is undefined.
+    
     def range(self):
-        pass
+        lst = self.root.rangehelp()
+        lst.sort()
+        length = len(lst) -1
+        print(lst)
+        return int(lst[length]) - int(lst[0])
 
 
     # Returns a list of nodes at a given level from left to right
